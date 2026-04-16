@@ -9,7 +9,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
@@ -37,82 +43,144 @@ fun ManagerTaskDetailsScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .verticalScroll(rememberScrollState())
             .padding(16.dp),
         verticalArrangement = Arrangement.Top
     ) {
-        Text("Карточка заявки")
+        Text(
+            text = "Карточка заявки",
+            style = MaterialTheme.typography.headlineSmall
+        )
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        Text("ID: ${task.id}")
-        Text("Название: ${task.title}")
-        Text("Адрес: ${task.address}")
-        Text("Клиент: ${task.clientName}")
-        Text("Статус: ${task.status}")
-        Text("Менеджер ID: ${task.managerId}")
-        Text("Специалист ID: ${task.specialistId ?: "-"}")
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
+        ) {
+            Column(modifier = Modifier.padding(16.dp)) {
+                Text(
+                    text = task.title,
+                    style = MaterialTheme.typography.titleLarge
+                )
 
-        Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(10.dp))
 
-        if (task.status == "DONE" || task.status == "CANCELLED") {
-            Button(
-                onClick = {
-                    scope.launch {
-                        try {
-                            val report = RetrofitClient.reportApi.getReport(task.id)
-                            reportText = report.data
-                            message = ""
-                        } catch (e: Exception) {
-                            message = "Ошибка: ${e.message}"
-                        }
-                    }
-                },
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text("Открыть отчёт")
-            }
+                PriorityBadge(task.priority)
 
-            Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(16.dp))
+                HorizontalDivider()
+                Spacer(modifier = Modifier.height(16.dp))
 
-            Button(
-                onClick = {
-                    scope.launch {
-                        try {
-                            val body = RetrofitClient.pdfApi.downloadPdf(task.id)
-                            val file = savePdfToFile(context, task.id, body.bytes())
-                            savedPdfFile = file
-                            message = "PDF сохранён: ${file.absolutePath}"
-                        } catch (e: Exception) {
-                            message = "Ошибка PDF: ${e.message}"
-                        }
-                    }
-                },
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text("Скачать PDF")
-            }
+                Text("Заявка", style = MaterialTheme.typography.titleMedium)
+                Spacer(modifier = Modifier.height(8.dp))
+                Text("ID: ${task.id}")
+                Text("Адрес: ${task.address}")
+                Text("Статус: ${task.status}")
+                Text("Срок: ${task.deadline ?: "-"}")
 
-            Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(16.dp))
+                HorizontalDivider()
+                Spacer(modifier = Modifier.height(16.dp))
 
-            if (savedPdfFile != null) {
-                Button(
-                    onClick = {
-                        openPdf(context, savedPdfFile!!)
-                    },
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text("Открыть PDF")
-                }
+                Text("Клиент", style = MaterialTheme.typography.titleMedium)
+                Spacer(modifier = Modifier.height(8.dp))
+                Text("Имя: ${task.clientName}")
+                Text("Телефон: ${task.clientPhone ?: "-"}")
 
-                Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(16.dp))
+                HorizontalDivider()
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Text("Исполнители", style = MaterialTheme.typography.titleMedium)
+                Spacer(modifier = Modifier.height(8.dp))
+                Text("Менеджер ID: ${task.managerId}")
+                Text("Специалист ID: ${task.specialistId ?: "-"}")
             }
         }
 
-        Button(
-            onClick = onBackClick,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text("Назад")
+        Spacer(modifier = Modifier.height(16.dp))
+
+        if (task.status == "DONE" || task.status == "CANCELLED") {
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
+            ) {
+                Column(modifier = Modifier.padding(16.dp)) {
+                    Text(
+                        text = "Действия",
+                        style = MaterialTheme.typography.titleMedium
+                    )
+
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    Button(
+                        onClick = {
+                            scope.launch {
+                                try {
+                                    val report = RetrofitClient.reportApi.getReport(task.id)
+                                    reportText = report.data
+                                    message = ""
+                                } catch (e: Exception) {
+                                    message = "Ошибка: ${e.message}"
+                                }
+                            }
+                        },
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text("Открыть отчёт")
+                    }
+
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    Button(
+                        onClick = {
+                            scope.launch {
+                                try {
+                                    val body = RetrofitClient.pdfApi.downloadPdf(task.id)
+                                    val file = savePdfToFile(context, task.id, body.bytes())
+                                    savedPdfFile = file
+                                    message = "PDF сохранён: ${file.absolutePath}"
+                                } catch (e: Exception) {
+                                    message = "Ошибка PDF: ${e.message}"
+                                }
+                            }
+                        },
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text("Скачать PDF")
+                    }
+
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    if (savedPdfFile != null) {
+                        Button(
+                            onClick = {
+                                openPdf(context, savedPdfFile!!)
+                            },
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Text("Открыть PDF")
+                        }
+
+                        Spacer(modifier = Modifier.height(12.dp))
+                    }
+
+                    Button(
+                        onClick = onBackClick,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text("Назад")
+                    }
+                }
+            }
+        } else {
+            Button(
+                onClick = onBackClick,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text("Назад")
+            }
         }
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -123,14 +191,26 @@ fun ManagerTaskDetailsScreen(
         }
 
         if (reportText.isNotEmpty()) {
-            Text("Отчёт")
-            Spacer(modifier = Modifier.height(8.dp))
-            OutlinedTextField(
-                value = reportText,
-                onValueChange = {},
+            Card(
                 modifier = Modifier.fillMaxWidth(),
-                readOnly = true
-            )
+                elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
+            ) {
+                Column(modifier = Modifier.padding(16.dp)) {
+                    Text(
+                        text = "Отчёт",
+                        style = MaterialTheme.typography.titleMedium
+                    )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    OutlinedTextField(
+                        value = reportText,
+                        onValueChange = {},
+                        modifier = Modifier.fillMaxWidth(),
+                        readOnly = true
+                    )
+                }
+            }
         }
     }
 }

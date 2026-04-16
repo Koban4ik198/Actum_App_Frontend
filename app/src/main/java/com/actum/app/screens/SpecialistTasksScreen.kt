@@ -16,6 +16,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.FilterChip
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -32,10 +33,6 @@ fun SpecialistTasksScreen(
     var selectedTab by remember { mutableStateOf("Доступные") }
     var openedTask by remember { mutableStateOf<TaskItem?>(null) }
 
-    fun loadTasks() {
-        message = "Загрузка..."
-    }
-
     LaunchedEffect(message) {
         try {
             tasks = RetrofitClient.taskApi.getTasks()
@@ -51,7 +48,6 @@ fun SpecialistTasksScreen(
             onBackClick = { openedTask = null },
             onActionDone = {
                 openedTask = null
-                // обновляем список
                 message = "Обновление..."
             }
         )
@@ -73,7 +69,10 @@ fun SpecialistTasksScreen(
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        Text("Заявки специалиста")
+        Text(
+            text = "Заявки специалиста",
+            style = MaterialTheme.typography.headlineSmall
+        )
 
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -124,16 +123,28 @@ fun SpecialistTasksScreen(
             items(filteredTasks) { task ->
                 Card(
                     modifier = Modifier.fillMaxWidth(),
-                    elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+                    elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
                 ) {
                     Column(modifier = Modifier.padding(16.dp)) {
-                        Text("Заявка #${task.id}")
-                        Text("Название: ${task.title}")
-                        Text("Адрес: ${task.address}")
-                        Text("Клиент: ${task.clientName}")
-                        Text("Статус: ${task.status}")
+                        Text(
+                            text = task.title,
+                            style = MaterialTheme.typography.titleMedium
+                        )
 
                         Spacer(modifier = Modifier.height(8.dp))
+
+                        Text("Заявка #${task.id}")
+                        Text("Адрес: ${task.address}")
+                        Text("Клиент: ${task.clientName}")
+                        Text("Телефон: ${task.clientPhone ?: "-"}")
+                        Text("Срок: ${task.deadline ?: "-"}")
+                        Text("Статус: ${task.status}")
+
+                        Spacer(modifier = Modifier.height(10.dp))
+
+                        PriorityBadge(task.priority)
+
+                        Spacer(modifier = Modifier.height(12.dp))
 
                         Button(
                             onClick = { openedTask = task }

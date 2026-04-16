@@ -5,6 +5,9 @@ data class TaskItem(
     val title: String,
     val address: String,
     val clientName: String,
+    val clientPhone: String?,
+    val priority: String?,
+    val deadline: String?,
     val status: String,
     val managerId: Long,
     val specialistId: Long?
