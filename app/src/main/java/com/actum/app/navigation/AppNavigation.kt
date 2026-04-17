@@ -1,6 +1,6 @@
 package com.actum.app.navigation
 
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -24,6 +24,9 @@ object Routes {
 fun AppNavigation(
     navController: NavHostController = rememberNavController()
 ) {
+    var currentUserId by remember { mutableStateOf<Long?>(null) }
+    var currentFullName by remember { mutableStateOf("") }
+
     NavHost(
         navController = navController,
         startDestination = Routes.ROLE
@@ -45,7 +48,9 @@ fun AppNavigation(
                 onBackClick = {
                     navController.popBackStack()
                 },
-                onLoginSuccess = {
+                onLoginSuccess = { userId, fullName ->
+                    currentUserId = userId
+                    currentFullName = fullName
                     navController.navigate(Routes.SPECIALIST_TASKS)
                 }
             )
@@ -57,7 +62,9 @@ fun AppNavigation(
                 onBackClick = {
                     navController.popBackStack()
                 },
-                onLoginSuccess = {
+                onLoginSuccess = { userId, fullName ->
+                    currentUserId = userId
+                    currentFullName = fullName
                     navController.navigate(Routes.MANAGER)
                 }
             )
@@ -65,7 +72,11 @@ fun AppNavigation(
 
         composable(Routes.SPECIALIST_TASKS) {
             SpecialistTasksScreen(
+                specialistId = currentUserId ?: 0L,
+                specialistFullName = currentFullName,
                 onBackClick = {
+                    currentUserId = null
+                    currentFullName = ""
                     navController.navigate(Routes.ROLE) {
                         popUpTo(0)
                     }
@@ -75,7 +86,10 @@ fun AppNavigation(
 
         composable(Routes.MANAGER) {
             ManagerScreen(
+                managerFullName = currentFullName,
                 onBackClick = {
+                    currentUserId = null
+                    currentFullName = ""
                     navController.navigate(Routes.ROLE) {
                         popUpTo(0)
                     }

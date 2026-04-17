@@ -30,7 +30,7 @@ import kotlinx.coroutines.launch
 fun LoginScreen(
     role: String,
     onBackClick: () -> Unit,
-    onLoginSuccess: () -> Unit
+    onLoginSuccess: (userId: Long, fullName: String) -> Unit
 ) {
     var login by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -166,7 +166,7 @@ fun LoginScreen(
                                 }
 
                                 if (response.token.isNotEmpty()) {
-                                    onLoginSuccess()
+                                    onLoginSuccess(response.userId, response.fullName)
                                 } else {
                                     message = "Ошибка входа"
                                 }

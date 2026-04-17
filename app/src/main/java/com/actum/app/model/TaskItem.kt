@@ -10,5 +10,7 @@ data class TaskItem(
     val deadline: String?,
     val status: String,
     val managerId: Long,
-    val specialistId: Long?
+    val managerFullName: String?,
+    val specialistId: Long?,
+    val specialistFullName: String?
 )

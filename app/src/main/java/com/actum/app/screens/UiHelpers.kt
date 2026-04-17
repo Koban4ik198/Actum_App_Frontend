@@ -12,6 +12,7 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun PriorityBadge(priority: String?) {
+
     val backgroundColor = when (priority) {
         "URGENT" -> Color(0xFFFFCDD2)
         "NORMAL" -> Color(0xFFDCCAA2)
@@ -26,13 +27,20 @@ fun PriorityBadge(priority: String?) {
         else -> Color.Black
     }
 
+    val text = when (priority) {
+        "URGENT" -> "Срочный"
+        "NORMAL" -> "Обычный"
+        "LOW" -> "Низкий"
+        else -> "-"
+    }
+
     Box(
         modifier = Modifier
             .background(backgroundColor, shape = MaterialTheme.shapes.small)
             .padding(horizontal = 10.dp, vertical = 6.dp)
     ) {
         Text(
-            text = priority ?: "-",
+            text = text,
             color = textColor,
             style = MaterialTheme.typography.labelMedium
         )
