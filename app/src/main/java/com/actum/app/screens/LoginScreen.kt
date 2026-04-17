@@ -153,9 +153,22 @@ fun LoginScreen(
                                         password = password.trim()
                                     )
                                 )
-                                message = "Успешный вход"
+
+                                val expectedRole = when (role) {
+                                    "Специалист" -> "SPECIALIST"
+                                    "Менеджер" -> "MANAGER"
+                                    else -> ""
+                                }
+
+                                if (response.role != expectedRole) {
+                                    message = "Эта учётная запись не подходит для роли \"$role\""
+                                    return@launch
+                                }
+
                                 if (response.token.isNotEmpty()) {
                                     onLoginSuccess()
+                                } else {
+                                    message = "Ошибка входа"
                                 }
                             } catch (e: Exception) {
                                 message = "Ошибка входа"

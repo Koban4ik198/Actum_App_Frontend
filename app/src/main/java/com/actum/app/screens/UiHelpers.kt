@@ -14,14 +14,14 @@ import androidx.compose.ui.unit.dp
 fun PriorityBadge(priority: String?) {
     val backgroundColor = when (priority) {
         "URGENT" -> Color(0xFFFFCDD2)
-        "NORMAL" -> Color(0xFFD1C4E9)
+        "NORMAL" -> Color(0xFFDCCAA2)
         "LOW" -> Color(0xFFC8E6C9)
         else -> Color(0xFFE0E0E0)
     }
 
     val textColor = when (priority) {
         "URGENT" -> Color(0xFFB71C1C)
-        "NORMAL" -> Color(0xFF4527A0)
+        "NORMAL" -> Color(0xFFA8753D)
         "LOW" -> Color(0xFF1B5E20)
         else -> Color.Black
     }

@@ -96,6 +96,12 @@ fun CreateTaskScreen(
             )
 
             PriorityButton(
+                text = "LOW",
+                current = priority,
+                onClick = { priority = "LOW" }
+            )
+
+            PriorityButton(
                 text = "URGENT",
                 current = priority,
                 onClick = { priority = "URGENT" }
