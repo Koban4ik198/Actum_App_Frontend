@@ -1,5 +1,6 @@
 package com.actum.app.screens
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -20,8 +21,11 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import com.actum.app.R
 import com.actum.app.network.LoginRequest
 import com.actum.app.network.RetrofitClient
 import kotlinx.coroutines.launch
@@ -45,22 +49,19 @@ fun LoginScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(
-                brush = Brush.verticalGradient(
-                    listOf(
-                        MaterialTheme.colorScheme.primary.copy(alpha = 0.12f),
-                        MaterialTheme.colorScheme.background
-                    )
-                )
-            )
+            .background(MaterialTheme.colorScheme.background)
             .padding(20.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
-        Text(
-            text = "Actum",
-            style = MaterialTheme.typography.headlineLarge
+        Image(
+            painter = painterResource(id = R.drawable.actum_logo),
+            contentDescription = "Actum",
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(120.dp),
+            contentScale = ContentScale.Fit
         )
 
         Spacer(modifier = Modifier.height(8.dp))

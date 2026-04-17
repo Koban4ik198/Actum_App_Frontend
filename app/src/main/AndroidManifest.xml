@@ -9,7 +9,9 @@
         android:label="Actum"
         android:networkSecurityConfig="@xml/network_security_config"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Actum">
+        android:theme="@style/Theme.Actum"
+        android:icon="@mipmap/ic_launcher"
+        android:roundIcon="@mipmap/ic_launcher_round">
 
         <provider
             android:name="androidx.core.content.FileProvider"
